@@ -2,6 +2,7 @@ package com.nageoffer.shortlink.admin.common.biz.user;
 
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
+import com.google.common.collect.Lists;
 import com.nageoffer.shortlink.admin.common.convention.exception.ClientException;
 import com.nageoffer.shortlink.admin.common.convention.result.Results;
 import jakarta.servlet.*;
@@ -26,9 +27,9 @@ public class UserTransmitFilter implements Filter {
 
     private final StringRedisTemplate stringRedisTemplate;
 
-    private static final List<String> IGNORE_URI = List.of(
+    private static final List<String> IGNORE_URI = Lists.newArrayList(
             "/api/short-link/admin/v1/user/login",
-            "/api/short-link/admin/v1/actual/user/has-username"
+            "/api/short-link/admin/v1/user/has-username"
     );
 
     @SneakyThrows // 忽略异常注解
@@ -52,17 +53,21 @@ public class UserTransmitFilter implements Filter {
                         throw new ClientException(USER_TOKEN_FAIL);
                     }
                 } catch (Exception ex) {
-                    returnJson((HttpServletResponse) servletResponse,  JSON.toJSONString(Results.failure(new ClientException(USER_TOKEN_FAIL))));
+                    returnJson((HttpServletResponse) servletResponse, JSON.toJSONString(Results.failure(new ClientException(USER_TOKEN_FAIL))));
                     return;
                 }
                 UserInfoDTO userInfoDTO = JSON.parseObject(userInfoJsonStr.toString(), UserInfoDTO.class);
                 UserContext.setUser(userInfoDTO);
             }
+        }
+        try {
+            filterChain.doFilter(servletRequest, servletResponse);
+        } finally {
             UserContext.removeUser();
         }
     }
 
-     private void returnJson(HttpServletResponse response, String json) throws Exception {
+    private void returnJson(HttpServletResponse response, String json) throws Exception {
         PrintWriter writer = null;
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=utf-8");
