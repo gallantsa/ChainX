@@ -10,6 +10,8 @@ import com.nageoffer.shortlink.project.dto.resp.ShortLinkCreateRespDTO;
 import com.nageoffer.shortlink.project.dto.resp.ShortLinkGroupCountQueryRespDTO;
 import com.nageoffer.shortlink.project.dto.resp.ShortLinkPageRespDTO;
 import com.nageoffer.shortlink.project.service.ShortLinkService;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +25,14 @@ import java.util.List;
 public class ShortLinkController {
 
     private final ShortLinkService shortLinkService;
+
+    /**
+     * 短链接跳转
+     */
+    @GetMapping("/{short-uri}")
+    public void restoreUrl(@PathVariable("short-uri") String shortUri, ServletRequest request, ServletResponse response) {
+        shortLinkService.restoreUrl(shortUri, request, response);
+    }
 
     /**
      * 创建短链接
@@ -41,7 +51,7 @@ public class ShortLinkController {
         return Results.success();
     }
 
-     /**
+    /**
      * 分页查询短链接
      */
     @GetMapping("/api/short-link/v1/page")
@@ -51,6 +61,7 @@ public class ShortLinkController {
 
     /**
      * 查询短链接分组内数量
+     *
      * @return
      */
     @GetMapping("/api/short-link/v1/count")
