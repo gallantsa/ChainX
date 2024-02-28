@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ApifoxUploaderProjectSetting">
+    <option name="apifoxAccessToken" value="APS-5JsnFPTOk8NIJvBdVLshRbXCLP6Xm2Ne" />
+    <option name="apifoxProjectIds">
+      <array>
+        <option value="# ModuleName:ProjectID" />
+        <option value="" />
+      </array>
+    </option>
+    <option name="yapiTokens" value="" />
+  </component>
+</project>
