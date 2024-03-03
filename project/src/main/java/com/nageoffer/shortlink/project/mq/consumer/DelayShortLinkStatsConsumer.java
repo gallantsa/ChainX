@@ -1,4 +1,4 @@
-package com.nageoffer.shortlink.project.mq.comsumer;
+package com.nageoffer.shortlink.project.mq.consumer;
 
 import com.nageoffer.shortlink.project.dto.biz.ShortLinkStatsRecordDTO;
 import com.nageoffer.shortlink.project.service.ShortLinkService;
