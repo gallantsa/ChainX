@@ -37,3 +37,4 @@ build/
 /.idea/
 !/.idea/
 /.idea/
+/console-vue/dist.zip
