@@ -10,9 +10,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * 短链接后管应用
  */
 @SpringBootApplication
-@EnableDiscoveryClient
-@EnableFeignClients("com.nageoffer.shortlink.admin.remote")
-@MapperScan("com.nageoffer.shortlink.admin.dao.mapper")
+@EnableDiscoveryClient // 用于将应用程序注册为服务发现的客户端。
+@EnableFeignClients("com.nageoffer.shortlink.admin.remote") // 用于启用Feign客户端功能。
+@MapperScan("com.nageoffer.shortlink.admin.dao.mapper") // 用于扫描指定包下的Mapper接口，并注册到Spring容器中。
 public class ShortLinkAdminApplication {
     public static void main(String[] args) {
         SpringApplication.run(ShortLinkAdminApplication.class, args);

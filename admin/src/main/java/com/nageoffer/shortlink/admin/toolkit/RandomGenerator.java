@@ -25,6 +25,7 @@ public final class RandomGenerator {
      * @param length 生成多少位
      * @return 分组ID
      */
+    // 在后面的代码逻辑, 添加了每个用户只能创建20个分组的限制, 所以发生重复的概率非常小
     public static String generateRandom(int length) {
         StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {

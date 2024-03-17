@@ -10,7 +10,7 @@ import java.io.Serializable;
  * 全局返回对象
  */
 @Data
-@Accessors(chain = true)
+@Accessors(chain = true) // 开启链式调用
 public class Result<T> implements Serializable {
 
     @Serial

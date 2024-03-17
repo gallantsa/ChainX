@@ -10,6 +10,7 @@ import java.io.IOException;
 /**
  * 手机号脱敏反序列化
  */
+// 继承JsonSerializer类, 重写serialize方法, 配合hutool工具包可以自定义字段序列化结果
 public class PhoneDesensitizationSerializer extends JsonSerializer<String> {
 
     @Override

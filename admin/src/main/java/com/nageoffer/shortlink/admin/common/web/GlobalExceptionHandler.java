@@ -26,6 +26,11 @@ import java.util.Optional;
  */
 @Component("globalExceptionHandlerByAdmin")
 @Slf4j
+// 相当于
+// @ControllerAdvice 用于定义全局的控制器增强器, 主要用于定义一些通用的处理逻辑，例如全局异常处理、全局数据绑定、全局数据预处理等
+// 可以应用于所有的@Controller控制器
+// @ControllerAdvice可以结合@ExceptionHandler、@InitBinder和@ModelAttribute等注解来定义全局的异常处理、全局的数据绑定和全局的数据预处理逻辑。
+// @ResponseBody
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -49,6 +54,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = {AbstractException.class})
     public Result abstractException(HttpServletRequest request, AbstractException ex) {
+        // 如果异常有cause，则打印cause
         if (ex.getCause() != null) {
             log.error("[{}] {} [ex] {}", request.getMethod(), request.getRequestURL().toString(), ex.toString(), ex.getCause());
             return Results.failure(ex);

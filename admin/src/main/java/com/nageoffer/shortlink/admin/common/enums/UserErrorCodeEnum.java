@@ -7,6 +7,7 @@ import com.nageoffer.shortlink.admin.common.convention.errorcode.IErrorCode;
  */
 public enum UserErrorCodeEnum implements IErrorCode {
 
+    // 当使用到UserErrorCodeEnum.USER_NULL时, 构造函数会被调用
     USER_NULL("B000200", "用户记录不存在"),
 
     USER_NAME_EXIST("B000201", "用户名已存在"),

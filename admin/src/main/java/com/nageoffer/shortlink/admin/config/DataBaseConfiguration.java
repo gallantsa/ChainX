@@ -17,6 +17,7 @@ public class DataBaseConfiguration {
      * 分页插件
      */
     @Bean
+    // 如果没有相同类型的就注册当前bean, 可以作为默认选择
     @ConditionalOnMissingBean
     public MybatisPlusInterceptor mybatisPlusInterceptorByAdmin() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();

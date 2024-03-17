@@ -15,6 +15,7 @@ public class BaseDO {
     /**
      * 创建时间
      */
+    // MP特性, 配合MyMetaObjectHandler实现自动填充
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 

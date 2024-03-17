@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
+// 读取配置文件, 注意类中字段用小驼峰, 配置中的用-连接
 @ConfigurationProperties(prefix = "short-link.flow-limit")
 public class UserFlowRiskControlConfiguration {
 

@@ -29,7 +29,7 @@ import static com.nageoffer.shortlink.admin.common.convention.errorcode.BaseErro
  * 用户操作流量风控过滤器
  */
 @Slf4j
-@RequiredArgsConstructor
+@RequiredArgsConstructor // 生成一个接收所有非空和被@NonNull注解标记的成员变量作为参数
 public class UserFlowRiskControlFilter implements Filter {
 
     private final StringRedisTemplate stringRedisTemplate;

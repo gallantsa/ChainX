@@ -14,6 +14,7 @@ const http = axios.create({
   timeout: 15000
 })
 // 请求拦截 -->在请求发送之前做一些事情
+// 如果有token就携带token和username, 表示已经登录
 http.interceptors.request.use(
   (config) => {
     config.headers.Token = isNotEmpty(getToken()) ? getToken() : ''

@@ -22,7 +22,7 @@ public class UserConfiguration {
         FilterRegistrationBean<UserTransmitFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(new UserTransmitFilter());
         registration.addUrlPatterns("/*");
-        registration.setOrder(0);
+        registration.setOrder(0); // 值越小, 越先执行
         return registration;
     }
 
@@ -30,6 +30,7 @@ public class UserConfiguration {
      * 用户操作流量风控过滤器
      */
     @Bean
+    // 当配置文件中的 short-link.flow-limit.enable 属性值为 true 时，才会创建标注了该注解的 Bean
     @ConditionalOnProperty(name = "short-link.flow-limit.enable", havingValue = "true")
     public FilterRegistrationBean<UserFlowRiskControlFilter> globalUserFlowRiskControlFilter(
             StringRedisTemplate stringRedisTemplate,

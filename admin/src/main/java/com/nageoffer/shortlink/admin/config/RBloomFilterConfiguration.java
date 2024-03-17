@@ -17,7 +17,7 @@ public class RBloomFilterConfiguration {
     @Bean
     public RBloomFilter<String> userRegisterCachePenetrationBloomFilter(RedissonClient redissonClient) {
         RBloomFilter<String> cachePenetrationBloomFilter = redissonClient.getBloomFilter("userRegisterCachePenetrationBloomFilter");
-        cachePenetrationBloomFilter.tryInit(100000000L, 0.001);
+        cachePenetrationBloomFilter.tryInit(100000000L, 0.001); // 预计要插入的元素数量, 期望的误差率
         return cachePenetrationBloomFilter;
     }
 }
