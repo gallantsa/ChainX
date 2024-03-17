@@ -62,32 +62,45 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         return result;
     }
 
+    /**
+     * 查询用户名是否可用
+     *
+     * @param username 用户名
+     * @return 用户名可用返回 true，否则返回 false
+     */
     @Override
     public Boolean hasUsername(String username) {
+        // 布隆过滤器中不包含该用户名, 则返回 true, 表示用户名可用
         return !userRegisterCachePenetrationBloomFilter.contains(username);
     }
 
     @Override
     public void register(UserRegisterReqDTO requestParam) {
+        // 用户名是否存在
         if (!hasUsername(requestParam.getUsername())) {
             throw new ClientException(UserErrorCodeEnum.USER_NAME_EXIST);
         }
+        // 用户名加分布式锁, 防止并发注册, SET lock_key value NX PX 30000, 如果key不存在, 则获取锁
         RLock lock = redissonClient.getLock(LOCK_USER_REGISTER_KEY + requestParam.getUsername());
 
         try {
+            // 如果获取到锁, 则执行注册逻辑
             if (lock.tryLock()) {
-                 try {
+                try {
                     int inserted = baseMapper.insert(BeanUtil.toBean(requestParam, UserDO.class));
                     if (inserted < 1) {
                         throw new ClientException(USER_SAVE_ERROR);
                     }
-                } catch (DuplicateKeyException ex) {
+                } catch (DuplicateKeyException ex) { // DuplicateKeyException表示尝试向数据库插入或更新记录时发生重复键（即主键或唯一键）的异常
                     throw new ClientException(USER_EXIST);
                 }
+                // 用户名加入布隆过滤器
                 userRegisterCachePenetrationBloomFilter.add(requestParam.getUsername());
+                // 新增默认分组(每个用户都有一个默认分组)
                 groupService.saveGroup(requestParam.getUsername(), "默认分组");
                 return;
             }
+            // 如果没有获取到锁, 则抛出异常用户名已存在
             throw new ClientException(UserErrorCodeEnum.USER_NAME_EXIST);
         } finally {
             lock.unlock();
@@ -114,7 +127,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         if (userDO == null) {
             throw new ClientException("用户不存在");
         }
-         Map<Object, Object> hasLoginMap = stringRedisTemplate.opsForHash().entries(USER_LOGIN_KEY + requestParam.getUsername());
+        Map<Object, Object> hasLoginMap = stringRedisTemplate.opsForHash().entries(USER_LOGIN_KEY + requestParam.getUsername());
         if (CollUtil.isNotEmpty(hasLoginMap)) {
             stringRedisTemplate.expire(USER_LOGIN_KEY + requestParam.getUsername(), 30L, TimeUnit.MINUTES);
             String token = hasLoginMap.keySet().stream()
@@ -139,7 +152,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
 
     @Override
     public Boolean checkLogin(String username, String token) {
-         return stringRedisTemplate.opsForHash().get(USER_LOGIN_KEY + username, token) != null;
+        return stringRedisTemplate.opsForHash().get(USER_LOGIN_KEY + username, token) != null;
     }
 
     @Override
