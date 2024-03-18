@@ -123,6 +123,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
     }
 
     @Override
+    // 后端只需要根据前端传来的排序参数, 更新数据库中的排序字段即可
     public void sortGroup(List<ShortLinkGroupSortReqDTO> requestParam) {
         requestParam.forEach(each -> {
             GroupDO groupDO = GroupDO.builder()
