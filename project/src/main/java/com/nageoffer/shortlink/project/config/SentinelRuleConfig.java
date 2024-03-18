@@ -18,11 +18,15 @@ public class SentinelRuleConfig implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         List<FlowRule> rules = new ArrayList<>();
+
+        // 为接口 create_short-link 配置限流规则
         FlowRule createOrderRule = new FlowRule();
         createOrderRule.setResource("create_short-link");
         createOrderRule.setGrade(RuleConstant.FLOW_GRADE_QPS);
         createOrderRule.setCount(1);
         rules.add(createOrderRule);
+
+        // 加载限流规则
         FlowRuleManager.loadRules(rules);
     }
 }
