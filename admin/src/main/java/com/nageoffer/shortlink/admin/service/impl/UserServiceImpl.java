@@ -124,16 +124,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
                 .eq(UserDO::getDelFlag, 0);
         UserDO userDO = baseMapper.selectOne(queryWrapper);
 
+        // 如果用户不存在, 则抛出异常
         if (userDO == null) {
             throw new ClientException("用户不存在");
         }
+
+        // 如果用户已登录, 则刷新Token有效期
         Map<Object, Object> hasLoginMap = stringRedisTemplate.opsForHash().entries(USER_LOGIN_KEY + requestParam.getUsername());
         if (CollUtil.isNotEmpty(hasLoginMap)) {
+            // 如果用户已登录, 则刷新Token有效期
             stringRedisTemplate.expire(USER_LOGIN_KEY + requestParam.getUsername(), 30L, TimeUnit.MINUTES);
             String token = hasLoginMap.keySet().stream()
                     .findFirst()
                     .map(Object::toString)
-                    .orElseThrow(() -> new ClientException("用户登录错误"));
+                    .orElseThrow(() -> new ClientException("用户登录错误")); // 如果存在登录信息, 则返回Token
             return new UserLoginRespDTO(token);
         }
 
@@ -144,6 +148,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
          *  Key: token标识
          *  Value: JSON字符串(用户信息)
          */
+        // 如果用户未登录, 则生成Token, 并将用户信息存入Redis
         String uuid = UUID.randomUUID().toString();
         stringRedisTemplate.opsForHash().put(USER_LOGIN_KEY + requestParam.getUsername(), uuid, JSON.toJSONString(userDO));
         stringRedisTemplate.expire(USER_LOGIN_KEY + requestParam.getUsername(), 30L, TimeUnit.MINUTES);
