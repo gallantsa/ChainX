@@ -163,6 +163,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
 
     @Override
     public void logout(String username, String token) {
+        // 判断用户是否登录, 如果登录, 则删除用户登录信息
         if (checkLogin(username, token)) {
             stringRedisTemplate.delete(USER_LOGIN_KEY + username);
             return;
