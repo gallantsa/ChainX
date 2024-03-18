@@ -510,10 +510,12 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         List<String> describes = requestParam.getDescribes();
         List<ShortLinkBaseInfoRespDTO> result = new ArrayList<>();
         for (int i = 0; i < originUrls.size(); i++) {
+            // 构造创建短链接请求参数
             ShortLinkCreateReqDTO shortLinkCreateReqDTO = BeanUtil.toBean(requestParam, ShortLinkCreateReqDTO.class);
             shortLinkCreateReqDTO.setOriginUrl(originUrls.get(i));
             shortLinkCreateReqDTO.setDescribe(describes.get(i));
             try {
+                // 创建短链接
                 ShortLinkCreateRespDTO shortLink = createShortLink(shortLinkCreateReqDTO);
                 ShortLinkBaseInfoRespDTO linkBaseInfoRespDTO = ShortLinkBaseInfoRespDTO.builder()
                         .fullShortUrl(shortLink.getFullShortUrl())
