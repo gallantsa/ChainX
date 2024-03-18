@@ -85,12 +85,16 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
         LambdaQueryWrapper<GroupDO> queryWrapper = Wrappers.lambdaQuery(GroupDO.class)
                 .eq(GroupDO::getDelFlag, 0)
                 .eq(GroupDO::getUsername, UserContext.getUsername())
+                // 先按排序字段倒序, 如果排序字段相同, 再按更新时间倒序
                 .orderByDesc(GroupDO::getSortOrder, GroupDO::getUpdateTime);
         List<GroupDO> groupDOList = baseMapper.selectList(queryWrapper);
-         Result<List<ShortLinkGroupCountQueryRespDTO>> listResult = shortLinkActualRemoteService
+        // 查询分组下的全部短链接
+        Result<List<ShortLinkGroupCountQueryRespDTO>> listResult = shortLinkActualRemoteService
                 .listGroupShortLinkCount(groupDOList.stream().map(GroupDO::getGid).toList());
         List<ShortLinkGroupRespDTO> shortLinkGroupRespDTOList = BeanUtil.copyToList(groupDOList, ShortLinkGroupRespDTO.class);
+        // 将短链接数量填充到分组中
         shortLinkGroupRespDTOList.forEach(each -> {
+            // 从查询结果中找到对应的分组, 并填充到分组中
             Optional<ShortLinkGroupCountQueryRespDTO> first = listResult.getData().stream()
                     .filter(item -> Objects.equals(item.getGid(), each.getGid()))
                     .findFirst();
@@ -105,6 +109,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
                 .eq(GroupDO::getGid, requestParam.getGid())
                 .eq(GroupDO::getUsername, UserContext.getUsername())
                 .eq(GroupDO::getDelFlag, 0);
+        // 更新分组名称
         GroupDO groupDO = GroupDO.builder()
                 .name(requestParam.getName())
                 .build();
@@ -117,6 +122,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
                 .eq(GroupDO::getUsername, UserContext.getUsername())
                 .eq(GroupDO::getGid, gid)
                 .eq(GroupDO::getDelFlag, 0);
+        // 逻辑删除分组
         GroupDO groupDO = new GroupDO();
         groupDO.setDelFlag(1);
         baseMapper.update(groupDO, updateWrapper);
@@ -139,8 +145,9 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
 
     /**
      * 判断分组ID是否存在
+     *
      * @param username 用户名
-     * @param gid 分组ID
+     * @param gid      分组ID
      * @return 是否存在
      */
     private boolean hasGid(String username, String gid) {
