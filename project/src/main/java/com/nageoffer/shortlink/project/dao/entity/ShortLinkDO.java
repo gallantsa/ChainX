@@ -78,6 +78,7 @@ public class ShortLinkDO extends BaseDO {
     /**
      * 描述
      */
+    // 使用到了多表查询, 因此查出的结果, 可能很多字段并不在原来的的SortLink数据库表中, 因此需要加上这个注解
     @TableField("`describe`")
     private String describe;
 
