@@ -59,11 +59,13 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
                     .eq(GroupDO::getUsername, username)
                     .eq(GroupDO::getDelFlag, 0);
             List<GroupDO> groupDOList = baseMapper.selectList(queryWrapper);
+            // 判断是否超出最大分组数
             if (CollUtil.isNotEmpty(groupDOList) && groupDOList.size() == groupMaxNum) {
                 throw new ClientException(String.format("已超出最大分组数：%d", groupMaxNum));
             }
             String gid;
             do {
+                // 生成随机六位分组ID
                 gid = RandomGenerator.generateRandom();
             } while (!hasGid(username, gid));
             GroupDO groupDO = GroupDO.builder()
@@ -134,9 +136,16 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
         });
     }
 
+    /**
+     * 判断分组ID是否存在
+     * @param username 用户名
+     * @param gid 分组ID
+     * @return 是否存在
+     */
     private boolean hasGid(String username, String gid) {
         LambdaQueryWrapper<GroupDO> queryWrapper = Wrappers.lambdaQuery(GroupDO.class)
                 .eq(GroupDO::getGid, gid)
+                // 如果用户名为空, 则使用当前登录用户
                 .eq(GroupDO::getUsername, Optional.ofNullable(username).orElse(UserContext.getUsername()));
         GroupDO hasGroupFlag = baseMapper.selectOne(queryWrapper);
         return hasGroupFlag == null;
