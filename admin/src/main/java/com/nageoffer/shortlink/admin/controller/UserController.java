@@ -35,6 +35,7 @@ public class UserController {
      */
     @GetMapping("/api/short-link/admin/v1/actual/user/{username}")
     public Result<UserActualRespDTO> getActualUserByUsername(@PathVariable("username") String username) {
+        // 返回无脱敏实体
         return Results.success(BeanUtil.toBean(userService.getUserByUsername(username), UserActualRespDTO.class));
     }
 

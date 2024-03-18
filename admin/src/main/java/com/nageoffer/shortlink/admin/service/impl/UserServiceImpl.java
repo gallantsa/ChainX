@@ -58,6 +58,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
             throw new ServiceException(UserErrorCodeEnum.USER_NULL);
         }
         UserRespDTO result = new UserRespDTO();
+        // 转换成脱敏实体返回
         BeanUtils.copyProperties(userDo, result);
         return result;
     }
