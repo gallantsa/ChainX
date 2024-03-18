@@ -193,6 +193,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
 
     @Override
     public List<ShortLinkGroupCountQueryRespDTO> listGroupShortLinkCount(List<String> requestParam) {
+        // 根据gid查询短链接分组内数量, 并根据gid分组
         QueryWrapper<ShortLinkDO> queryWrapper = Wrappers.query(new ShortLinkDO())
                 .select("gid as gid, count(*) as shortLinkCount")
                 .in("gid", requestParam)
@@ -200,7 +201,9 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 .eq("del_flag", 0)
                 .eq("del_time", 0L)
                 .groupBy("gid");
+        // Map的key为gid, value为短链接数量
         List<Map<String, Object>> shortLinkDOList = baseMapper.selectMaps(queryWrapper);
+        // 将Map中的键值分别转换成ShortLinkGroupCountQueryRespDTO的两个属性
         return BeanUtil.copyToList(shortLinkDOList, ShortLinkGroupCountQueryRespDTO.class);
     }
 
