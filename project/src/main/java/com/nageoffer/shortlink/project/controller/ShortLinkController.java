@@ -42,6 +42,9 @@ public class ShortLinkController {
      * 创建短链接
      */
     @PostMapping("/api/short-link/v1/create")
+    // 用于定义资源的限流规则和降级规则
+    // blockHandler：定义资源的降级逻辑处理方法
+    // blockHandlerClass：定义资源的降级逻辑处理类
     @SentinelResource(
             value = "create_short-link",
             blockHandler = "createShortLinkBlockHandlerMethod",

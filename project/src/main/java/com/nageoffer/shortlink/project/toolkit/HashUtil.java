@@ -26,8 +26,9 @@ public class HashUtil {
     }
 
     public static String hashToBase62(String str) {
-        int i = MurmurHash.hash32(str);
+        int i = MurmurHash.hash32(str); // -2147483648 到 2147483647
+        // 为了防止负数，转为正数(i可能为负数)
         long num = i < 0 ? Integer.MAX_VALUE - (long) i : i;
-        return convertDecToBase62(num);
+        return convertDecToBase62(num); // 结果位数不固定, 要看i的大小
     }
 }

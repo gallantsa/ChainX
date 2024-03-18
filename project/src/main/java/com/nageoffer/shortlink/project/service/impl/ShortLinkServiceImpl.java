@@ -93,6 +93,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     @Override
     public ShortLinkCreateRespDTO createShortLink(ShortLinkCreateReqDTO requestParam) {
 
+        // 验证白名单
         verificationWhitelist(requestParam.getOriginUrl());
 
         // 生成短链接后缀
@@ -141,7 +142,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 LinkUtil.getLinkCacheValidTime(requestParam.getValidDate()), TimeUnit.MILLISECONDS
         );
 
-        // 将短链接存入布隆过滤器 -> 这里mading第一次写错了
+        // 将短链接存入布隆过滤器
         shortUriCreateCachePenetrationBloomFilter.add(fullShortUrl);
 
         // 返回结果
@@ -152,6 +153,11 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 .build();
     }
 
+    /**
+     * 生成短链接后缀
+     * @param requestParam 请求参数
+     * @return
+     */
     private String generateSuffix(ShortLinkCreateReqDTO requestParam) {
         // 自定义生成次数
         int customGenerateCount = 0;
@@ -160,6 +166,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
 
         // 生成短链接
         while (true) {
+            // 自定义生成次数超过10次
             if (customGenerateCount > 10) {
                 throw new ServiceException("短链接频繁生成，请稍后再试");
             }
@@ -524,11 +531,16 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 .build();
     }
 
+    /**
+     * 验证白名单
+     * @param originUrl 原始链接
+     */
     private void verificationWhitelist(String originUrl) {
         Boolean enable = gotoDomainWhiteListConfiguration.getEnable();
         if (enable == null || !enable) {
             return;
         }
+        // 提取域名
         String domain = LinkUtil.extractDomain(originUrl);
         if (StrUtil.isBlank(domain)) {
             throw new ClientException("跳转链接填写错误");

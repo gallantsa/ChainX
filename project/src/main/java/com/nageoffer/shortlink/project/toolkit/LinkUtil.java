@@ -23,6 +23,7 @@ public class LinkUtil {
      * @return 有限期时间戳
      */
     public static long getLinkCacheValidTime(Date validDate) {
+        // 如果有效期时间为空，则默认一个月
         return Optional.ofNullable(validDate)
                 .map(each -> DateUtil.between(new Date(), each, DateUnit.MS))
                 .orElse(DEFAULT_CACHE_VALID_TIME);
