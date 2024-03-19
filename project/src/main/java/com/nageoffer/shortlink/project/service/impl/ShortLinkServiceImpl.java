@@ -219,21 +219,23 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private String generateSuffix(ShortLinkCreateReqDTO requestParam) {
         // 自定义生成次数
         int customGenerateCount = 0;
-
         String shorUri;
+        String originUrl = requestParam.getOriginUrl();
 
-        // 生成短链接
+        // 为了防止短链接生成重复，这里尝试生成10次(概率很小, 基本不会出现重复)
         while (true) {
             // 自定义生成次数超过10次
             if (customGenerateCount > 10) {
                 throw new ServiceException("短链接频繁生成，请稍后再试");
             }
-            String originUrl = requestParam.getOriginUrl();
-            originUrl += UUID.randomUUID().toString();
+            // 生成短链接
             shorUri = HashUtil.hashToBase62(originUrl);
+            // 如果布隆过滤器中不存在，则成功生成, 跳出循环
             if (!shortUriCreateCachePenetrationBloomFilter.contains(createShortLinkDefaultDomain + "/" + shorUri)) {
                 break;
             }
+            // 重新生成短链接
+            originUrl += UUID.randomUUID().toString();
             customGenerateCount++;
         }
         return shorUri;
@@ -241,6 +243,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
 
     /**
      * 生成短链接后缀(分布式锁)
+     *
      * @param requestParam
      * @return
      */
