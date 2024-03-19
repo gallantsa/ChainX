@@ -14,6 +14,6 @@ public class ShortLinkNotFoundController {
      */
     @RequestMapping("/page/notfound")
     public String notfound() {
-        return "notfound";
+        return "notfound"; // 配置了mvc视图解析器，所以不需要写完整路径
     }
 }
