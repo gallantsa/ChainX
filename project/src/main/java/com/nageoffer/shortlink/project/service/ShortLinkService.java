@@ -78,4 +78,12 @@ public interface ShortLinkService extends IService<ShortLinkDO> {
      * @param shortLinkStatsRecord 短链接统计实体参数
      */
     void shortLinkStats(String fullShortUrl, String gid, ShortLinkStatsRecordDTO shortLinkStatsRecord);
+
+    /**
+     * 根据分布式锁创建短链接
+     *
+     * @param requestParam 创建短链接请求参数
+     * @return 短链接创建信息
+     */
+    ShortLinkCreateRespDTO createShortLinkByLock(ShortLinkCreateReqDTO requestParam);
 }
