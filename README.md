@@ -26,7 +26,7 @@
 ### 软件架构
 技术栈 SpringBoot + SpringCloudAlibaba + RocketMQ + ShardingSphere + Redis + MySQL + Sentinel + Nacos
 
-![](https://gallantsa.oss-cn-nanjing.aliyuncs.com/20250206044610909.png)
+![](https://gallantsa.oss-cn-nanjing.aliyuncs.com/20250206044829348.png)
 
 ### 参与贡献
 后端功能的开发，为保障隐私，具体内容可以参考我的简历。
