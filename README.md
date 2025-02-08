@@ -1,4 +1,4 @@
-# Shorten短链平台
+# ChainX短链平台
 
 ## 介绍
 
